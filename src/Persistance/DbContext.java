@@ -4,7 +4,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class DbContext<T> implements DbSet<T>{
