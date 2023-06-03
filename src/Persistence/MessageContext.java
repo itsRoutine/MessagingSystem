@@ -1,4 +1,4 @@
-package Persistance;
+package Persistence;
 
 import Model.Message;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
