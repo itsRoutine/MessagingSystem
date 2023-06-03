@@ -43,4 +43,8 @@ public class Message {
     public User getReceiver() {
         return receiver;
     }
+
+    public String getContent() {
+        return content;
+    }
 }

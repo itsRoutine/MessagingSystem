@@ -30,4 +30,8 @@ public class User {
         this.Password = Password;
         this.isAdmin = isAdmin;
     }
+
+    public String getUsername() {
+        return Username;
+    }
 }
