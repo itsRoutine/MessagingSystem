@@ -27,7 +27,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="8b9c6" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+              <component id="8b9c6" class="javax.swing.JTextField" binding="loginTextField">
                 <constraints>
                   <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -43,7 +43,7 @@
                   <text value="Username :"/>
                 </properties>
               </component>
-              <component id="7fde9" class="javax.swing.JPasswordField" binding="passwordField1" default-binding="true">
+              <component id="7fde9" class="javax.swing.JPasswordField" binding="loginPasswordField">
                 <constraints>
                   <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>

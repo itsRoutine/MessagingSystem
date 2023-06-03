@@ -34,4 +34,8 @@ public class User {
     public String getUsername() {
         return Username;
     }
+
+    public String getPassword() {
+        return Password;
+    }
 }
