@@ -13,6 +13,9 @@ public class Login {
     private JTextField loginTextField;
     private JPasswordField loginPasswordField;
     private JButton loginButton;
+    private JTextField registerTextField;
+    private JPasswordField registerPasswordField;
+    private JButton registerButton;
 
     public Login(DB db) {
         JFrame frame = new JFrame("Login");
@@ -30,6 +33,23 @@ public class Login {
                     // Todo: open the main form
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid username or password");
+                }
+            }
+        });
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = registerTextField.getText();
+                String password = registerPasswordField.getText();
+                User user = db.users.getByUsername(username);
+                if (user == null) {
+                    db.users.create(new User(username, password, false));
+                    registerTextField.setText("");
+                    registerPasswordField.setText("");
+                    tabbedPane.setSelectedIndex(0);
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Username already exists");
                 }
             }
         });
