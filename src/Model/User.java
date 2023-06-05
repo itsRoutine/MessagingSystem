@@ -38,4 +38,8 @@ public class User {
     public String getPassword() {
         return Password;
     }
+
+    public int getId() {
+        return id;
+    }
 }
