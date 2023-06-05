@@ -74,6 +74,24 @@ public class BasicUserMainForm {
                 }
             });
         }
+        startNewChatButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // get new chat username in a dialog
+                String username = JOptionPane.showInputDialog("Enter username");
+                if(username != null) {
+                    User receiver = db.users.getByUsername(username);
+                    if(receiver != null) {
+                        // create new chat tab
+                        chats.addTab(username, createChatTab(db, username, user));
+                        // set new chat tab as selected
+                        chats.setSelectedIndex(chats.getTabCount() - 1);
+                    }
+                    else
+                        JOptionPane.showMessageDialog(null, "User not found");
+                }
+            }
+        });
     }
 
     // create a chat tab with table of messages
