@@ -5,10 +5,8 @@ import Model.User;
 import Persistence.DB;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,7 +32,7 @@ public class BasicUserMainForm {
         frame.setVisible(true);
 
         // add one tab for each sender
-        List<String> senders = db.messages.getSendersUsername(user.getId());
+        List<String> senders = db.messages.getConversations(user.getId());
         for (String sender : senders) {
             chats.addTab(sender,createChatTab(db, sender, user));
         }
@@ -189,7 +187,7 @@ public class BasicUserMainForm {
     }
 
     private void setUnreadMessagesBadge(DB db, User user) {
-        List<String> senders = db.messages.getSendersUsername(user.getId());
+        List<String> senders = db.messages.getConversations(user.getId());
         List<Message> messages = new ArrayList<>();
         for (String sender : senders) {
             User senderUser = db.users.getByUsername(sender);
