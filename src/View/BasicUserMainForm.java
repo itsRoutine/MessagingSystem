@@ -5,25 +5,27 @@ import Model.User;
 import Persistence.DB;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BasicUserMainForm {
     private JButton startNewChatButton;
-    private JButton markAllAsReadButton;
-    private JButton markSelectedAsReadButton;
-    private JButton markSelectedAsUnredButton;
     private JPanel BasicUserMainForm;
     private JTabbedPane chats;
     private JTextField chatField;
     private JButton sendButton;
     private JList unreadMessagesBadge;
 
+    private List<JTable> tables = new ArrayList<>();
     public BasicUserMainForm(DB db, User user) {
         JFrame frame = new JFrame("BasicUserMainForm");
         frame.setContentPane(BasicUserMainForm);
@@ -53,6 +55,25 @@ public class BasicUserMainForm {
                 }
             }
         });
+        // add focus listener to for each table
+        for (JTable table : tables) {
+            table.addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    // mark all messages for the selected sender as read if it's not sent by the user
+                    String sender = chats.getTitleAt(chats.getSelectedIndex());
+                    User senderUser = db.users.getByUsername(sender);
+                    db.messages.getMessages(user.getId(), senderUser.getId()).forEach(message -> {
+                        if(!message.isRead() && !message.getSender().getUsername().equals(user.getUsername())) {
+                            message.setRead(true);
+                            db.messages.update(message);
+                        }
+                    });
+                    chats.setComponentAt(chats.getSelectedIndex(), createChatTab(db, sender, user));
+                    setUnreadMessagesBadge(db, user);
+                }
+            });
+        }
     }
 
     // create a chat tab with table of messages
@@ -117,6 +138,8 @@ public class BasicUserMainForm {
             table.setRowHeight(i, chatHeightCalculator((String)table.getValueAt(i, 1)));
         }
 
+        // add table to list of tables
+        tables.add(table);
 
         return table;
     }
@@ -162,7 +185,8 @@ public class BasicUserMainForm {
                 if(message.getSender().getUsername().equals(sender) && !message.isRead())
                     unreadMessages++;
             }
-            data[senders.indexOf(sender)] = sender + " (" + unreadMessages + ")";
+            if(unreadMessages != 0)
+                data[senders.indexOf(sender)] = sender + " (" + unreadMessages + ")";
         }
         unreadMessagesBadge.setListData(data);
     }
