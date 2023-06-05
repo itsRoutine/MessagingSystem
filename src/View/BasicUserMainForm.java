@@ -8,6 +8,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BasicUserMainForm {
@@ -17,8 +20,9 @@ public class BasicUserMainForm {
     private JButton markSelectedAsUnredButton;
     private JPanel BasicUserMainForm;
     private JTabbedPane chats;
-    private JTextField textField1;
+    private JTextField chatField;
     private JButton sendButton;
+    private JList unreadMessagesBadge;
 
     public BasicUserMainForm(DB db, User user) {
         JFrame frame = new JFrame("BasicUserMainForm");
@@ -32,6 +36,23 @@ public class BasicUserMainForm {
         for (String sender : senders) {
             chats.addTab(sender,createChatTab(db, sender, user));
         }
+
+        // set unread messages badge
+        setUnreadMessagesBadge(db, user);
+
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(chats.getSelectedIndex() != -1) {
+                    String sender = chats.getTitleAt(chats.getSelectedIndex());
+                    User senderUser = db.users.getByUsername(sender);
+                    Message msg = new Message(chatField.getText(), user, senderUser, false, new java.util.Date());
+                    db.messages.create(msg);
+                    chats.setComponentAt(chats.getSelectedIndex(), createChatTab(db, sender, user));
+                    chatField.setText("");
+                }
+            }
+        });
     }
 
     // create a chat tab with table of messages
@@ -57,7 +78,11 @@ public class BasicUserMainForm {
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 2;
+                // only read column is editable if sender is not the user
+                if(column == 2 && !data[row][3].equals(user.getUsername()))
+                    return true;
+                else
+                    return false;
             }
             @Override
             public Class<?> getColumnClass(int column) {
@@ -89,14 +114,14 @@ public class BasicUserMainForm {
 
         // set row heights
         for (int i = 0; i < table.getRowCount(); i++) {
-            table.setRowHeight(i, heightCalculator((String)table.getValueAt(i, 1)));
+            table.setRowHeight(i, chatHeightCalculator((String)table.getValueAt(i, 1)));
         }
 
 
         return table;
     }
 
-    private int heightCalculator(String content) {
+    private int chatHeightCalculator(String content) {
         // every 60 characters add 1 row
         int rows = content.length() / 60;
         if (content.length() % 60 != 0)
@@ -120,5 +145,25 @@ public class BasicUserMainForm {
                 setBackground(table.getBackground());
             return this;
         }
+    }
+
+    private void setUnreadMessagesBadge(DB db, User user) {
+        List<String> senders = db.messages.getSendersUsername(user.getId());
+        List<Message> messages = new ArrayList<>();
+        for (String sender : senders) {
+            User senderUser = db.users.getByUsername(sender);
+            messages.addAll(db.messages.getMessages(user.getId(), senderUser.getId()));
+        }
+        // add new unreadMessages count for each sender
+        var data = new String[senders.size()];
+        for(String sender : senders) {
+            int unreadMessages = 0;
+            for (Message message : messages) {
+                if(message.getSender().getUsername().equals(sender) && !message.isRead())
+                    unreadMessages++;
+            }
+            data[senders.indexOf(sender)] = sender + " (" + unreadMessages + ")";
+        }
+        unreadMessagesBadge.setListData(data);
     }
 }
