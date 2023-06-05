@@ -47,4 +47,12 @@ public class Message {
     public String getContent() {
         return content;
     }
+
+    public Object getDate() {
+        return date;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
 }

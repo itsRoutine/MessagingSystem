@@ -35,4 +35,20 @@ public class MessageContext<T> extends DbContext<T> {
             return null;
         }
     }
+
+    public List<Message> getMessages(int senderId, int recieverId) {
+        try {
+            // query for (senderId = senderId and recieverId = recieverId) or (senderId = recieverId and recieverId = senderId)
+            var qb = context.queryBuilder();
+            var where = qb.where();
+            return (List<Message>) where.or(
+                    where.eq("Sender_id", senderId).and().eq("Receiver_id", recieverId),
+                    where.eq("Sender_id", recieverId).and().eq("Receiver_id", senderId)
+            ).query();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
