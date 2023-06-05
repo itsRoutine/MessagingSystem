@@ -30,7 +30,8 @@ public class Login {
                 String password = loginPasswordField.getText();
                 User user = db.users.getByUsername(username);
                 if (user != null && user.getPassword().equals(password)) {
-                    // Todo: open the main form
+                    new BasicUserMainForm(db, user);
+                    frame.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid username or password");
                 }
