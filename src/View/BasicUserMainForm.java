@@ -23,7 +23,7 @@ public class BasicUserMainForm {
     private JButton sendButton;
     private JList unreadMessagesBadge;
 
-    private List<JTable> tables = new ArrayList<>();
+    private final List<JTable> tables = new ArrayList<>();
     public BasicUserMainForm(DB db, User user) {
         JFrame frame = new JFrame("BasicUserMainForm");
         frame.setContentPane(BasicUserMainForm);
@@ -116,10 +116,7 @@ public class BasicUserMainForm {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // only read column is editable if sender is not the user
-                if(column == 2 && !data[row][3].equals(user.getUsername()))
-                    return true;
-                else
-                    return false;
+                return column == 2 && !data[row][3].equals(user.getUsername());
             }
             @Override
             public Class<?> getColumnClass(int column) {
@@ -138,7 +135,7 @@ public class BasicUserMainForm {
         // set table model and render content cell as text area
         table.setModel(tableModel);
         table.getColumnModel().getColumn(1).setCellRenderer(new TextAreaRenderer());
-        table.setShowHorizontalLines(true);
+        table.setShowHorizontalLines(false);
         table.setShowVerticalLines(false);
 
         // set column widths
