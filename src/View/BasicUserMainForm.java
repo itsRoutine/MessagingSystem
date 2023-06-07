@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class BasicUserMainForm {
         frame.setVisible(true);
 
         // fix frame size
-        frame.setMinimumSize(new Dimension(700 , 500));
+        frame.setMinimumSize(new Dimension(800 , 500));
 
         // add one tab for each sender
         List<String> senders = db.messages.getConversations(user.getId());
@@ -122,9 +123,14 @@ public class BasicUserMainForm {
     }
 
     // create a chat tab with table of messages
-    private JTable createChatTab(DB db, String sender, User user) {
-        // create table
+    private JScrollPane createChatTab(DB db, String sender, User user) {
+
+        // create JScrollPane
+        JScrollPane scrollPane = new JScrollPane();
+
+        // create table and add it to scroll pane
         JTable table = new JTable();
+        scrollPane.setViewportView(table);
 
         // create table model
         String[] columnNames = {"Date","Message", "Read","Sender",};
@@ -132,12 +138,15 @@ public class BasicUserMainForm {
         User senderUser = db.users.getByUsername(sender);
         List<Message> messages = db.messages.getMessages(user.getId(), senderUser.getId());
 
+        // fill table data in reverse order
         Object[][] data = new Object[messages.size()][4];
-        for (int i = 0; i < messages.size(); i++) {
-            data[i][0] = messages.get(i).getDate().toString().substring(0, 19).replace('T', ' ');
-            data[i][1] = messages.get(i).getContent();
-            data[i][2] = messages.get(i).isRead();
-            data[i][3] = messages.get(i).getSender().getUsername();
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            Message message = messages.get(i);
+            // add date in format "dd/MM/yyyy \n HH:mm:ss"
+            data[messages.size() - i - 1][0] = new SimpleDateFormat("dd/MM/yyyy \n HH:mm:ss").format(message.getDate());
+            data[messages.size() - i - 1][1] = message.getContent();
+            data[messages.size() - i - 1][2] = message.isRead();
+            data[messages.size() - i - 1][3] = message.getSender().getUsername();
         }
 
         // create table model
@@ -183,7 +192,8 @@ public class BasicUserMainForm {
         // add table to list of tables
         tables.add(table);
 
-        return table;
+        // return scroll pane
+        return scrollPane;
     }
 
     private int chatHeightCalculator(String content) {

@@ -42,4 +42,8 @@ public class User {
     public int getId() {
         return id;
     }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
 }
