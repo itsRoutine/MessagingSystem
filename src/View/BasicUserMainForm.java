@@ -22,14 +22,22 @@ public class BasicUserMainForm {
     private JTextField chatField;
     private JButton sendButton;
     private JList unreadMessagesBadge;
+    private JButton messageToAllButton;
 
     private final List<JTable> tables = new ArrayList<>();
     public BasicUserMainForm(DB db, User user) {
+
+        // Hide message to all button if user is not admin
+        messageToAllButton.setVisible(user.isAdmin());
+
         JFrame frame = new JFrame("BasicUserMainForm");
         frame.setContentPane(BasicUserMainForm);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
+        // fix frame size
+        frame.setMinimumSize(new Dimension(700 , 500));
 
         // add one tab for each sender
         List<String> senders = db.messages.getConversations(user.getId());
@@ -87,6 +95,27 @@ public class BasicUserMainForm {
                     }
                     else
                         JOptionPane.showMessageDialog(null, "User not found");
+                }
+            }
+        });
+        messageToAllButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // get message in a dialog
+                String message = JOptionPane.showInputDialog("Enter message");
+                if(message != null) {
+                    // send message to all users
+                    db.users.getAll().forEach(user1 -> {
+                        if(!user1.getUsername().equals(user.getUsername())) {
+                            Message msg = new Message(message, user, user1, false, new java.util.Date());
+                            db.messages.create(msg);
+                        }
+                    });
+
+                    // update all chats tab
+                    for (int i = 0; i < chats.getTabCount(); i++) {
+                        chats.setComponentAt(i, createChatTab(db, chats.getTitleAt(i), user));
+                    }
                 }
             }
         });
