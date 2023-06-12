@@ -89,6 +89,7 @@ public class BasicUserMainForm {
                 // get new chat username in a dialog
                 String username = JOptionPane.showInputDialog("Enter username");
                 if(username != null) {
+                    username = username.toLowerCase();
                     User receiver = db.users.getByUsername(username);
                     if(receiver != null) {
                         // create new chat tab
@@ -152,7 +153,8 @@ public class BasicUserMainForm {
             Message message = messages.get(i);
             // add date in format "dd/MM/yyyy \n HH:mm:ss"
             data[messages.size() - i - 1][0] = new SimpleDateFormat("dd/MM/yyyy \n HH:mm:ss").format(message.getDate());
-            data[messages.size() - i - 1][1] = message.getContent();
+            // content in format "sender: \t message"
+            data[messages.size() - i - 1][1] = message.getSender().getUsername() + ": \t" + message.getContent();
             data[messages.size() - i - 1][2] = message.isRead();
             data[messages.size() - i - 1][3] = message.getSender().getUsername();
         }
@@ -161,8 +163,7 @@ public class BasicUserMainForm {
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // only read column is editable if sender is not the user
-                return column == 2 && !data[row][3].equals(user.getUsername());
+                return false;
             }
             @Override
             public Class<?> getColumnClass(int column) {

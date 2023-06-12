@@ -22,6 +22,10 @@ public class DB {
 
         this.messages = new MessageContext<>(connectionSource);
         this.users = new UserContext<>(connectionSource);
+
+        // create admin user if not exists
+        if(users.getByUsername("admin") == null)
+            users.create(new User("admin", "admin", true));
     }
 
     public void closeConnection(){

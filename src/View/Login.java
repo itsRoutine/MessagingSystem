@@ -40,7 +40,7 @@ public class Login {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = loginTextField.getText();
+                String username = loginTextField.getText().toLowerCase();
                 String password = loginPasswordField.getText();
                 User user = db.users.getByUsername(username);
                 if (user != null && user.getPassword().equals(password)) {
@@ -54,7 +54,7 @@ public class Login {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = registerTextField.getText();
+                String username = registerTextField.getText().toLowerCase();
                 String password = registerPasswordField.getText();
                 User user = db.users.getByUsername(username);
                 if (user == null) {

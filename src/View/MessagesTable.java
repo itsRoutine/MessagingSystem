@@ -24,7 +24,7 @@ public class MessagesTable {
 
                 },
                 new String[]{
-                        "Sender", "Receiver", "Message", "Date"
+                        "Sender", "Receiver", "Message", "Date", "isRead"
                 }
         ));
 
@@ -35,7 +35,8 @@ public class MessagesTable {
                     message.getSender().getUsername(),
                     message.getReceiver().getUsername(),
                     message.getContent(),
-                    message.getDate()
+                    message.getDate(),
+                    message.isRead()
             });
         }
 
