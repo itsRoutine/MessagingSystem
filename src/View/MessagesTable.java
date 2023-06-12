@@ -44,5 +44,7 @@ public class MessagesTable {
         messagesTable.getColumnModel().getColumn(1).setPreferredWidth(100);
         messagesTable.getColumnModel().getColumn(2).setPreferredWidth(1200);
         messagesTable.getColumnModel().getColumn(3).setPreferredWidth(300);
+
+        messagesTable.getColumnModel().getColumn(4).setCellRenderer(messagesTable.getDefaultRenderer(Boolean.class));
     }
 }

@@ -8,15 +8,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicUserMainForm {
+public class MainForm {
     private JButton startNewChatButton;
     private JPanel BasicUserMainForm;
     private JTabbedPane chats;
@@ -25,9 +22,10 @@ public class BasicUserMainForm {
     private JList unreadMessagesBadge;
     private JButton messageToAllButton;
     private JButton viewAllMessagesButton;
+    private JButton logoutButton;
 
     private final List<JTable> tables = new ArrayList<>();
-    public BasicUserMainForm(DB db, User user) {
+    public MainForm(DB db, User user) {
 
         // Hide message to all button if user is not admin
         messageToAllButton.setVisible(user.isAdmin());
@@ -129,6 +127,20 @@ public class BasicUserMainForm {
                 new MessagesTable(db);
             }
         });
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                new Login(db);
+            }
+        });
+        chatField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER)
+                    sendButton.doClick();
+            }
+        });
     }
 
     // create a chat tab with table of messages
@@ -154,7 +166,7 @@ public class BasicUserMainForm {
             // add date in format "dd/MM/yyyy \n HH:mm:ss"
             data[messages.size() - i - 1][0] = new SimpleDateFormat("dd/MM/yyyy \n HH:mm:ss").format(message.getDate());
             // content in format "sender: \t message"
-            data[messages.size() - i - 1][1] = message.getSender().getUsername() + ": \t" + message.getContent();
+            data[messages.size() - i - 1][1] = message.getSender().getUsername() + ": " + message.getContent();
             data[messages.size() - i - 1][2] = message.isRead();
             data[messages.size() - i - 1][3] = message.getSender().getUsername();
         }

@@ -44,7 +44,7 @@ public class Login {
                 String password = loginPasswordField.getText();
                 User user = db.users.getByUsername(username);
                 if (user != null && user.getPassword().equals(password)) {
-                    new BasicUserMainForm(db, user);
+                    new MainForm(db, user);
                     frame.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid username or password");
