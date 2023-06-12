@@ -24,12 +24,14 @@ public class BasicUserMainForm {
     private JButton sendButton;
     private JList unreadMessagesBadge;
     private JButton messageToAllButton;
+    private JButton viewAllMessagesButton;
 
     private final List<JTable> tables = new ArrayList<>();
     public BasicUserMainForm(DB db, User user) {
 
         // Hide message to all button if user is not admin
         messageToAllButton.setVisible(user.isAdmin());
+        viewAllMessagesButton.setVisible(user.isAdmin());
 
         JFrame frame = new JFrame("BasicUserMainForm");
         frame.setContentPane(BasicUserMainForm);
@@ -118,6 +120,12 @@ public class BasicUserMainForm {
                         chats.setComponentAt(i, createChatTab(db, chats.getTitleAt(i), user));
                     }
                 }
+            }
+        });
+        viewAllMessagesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new MessagesTable(db);
             }
         });
     }
